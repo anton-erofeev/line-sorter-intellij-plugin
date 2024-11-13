@@ -13,13 +13,40 @@
     ]]></description>
 
     <actions>
-        <action
-                id="SortLinesAction"
-                class="com.github.antonerofeev.linesorterintellijplugin.actions.SortLinesAction"
-                text="Sort Lines"
-                description="Sort lines alphabetically in the file">
+        <group id="RefactorSortGroup" text="Sort Lines..." description="Sort lines menu" popup="true">
             <add-to-group group-id="RefactoringMenu" anchor="last"/>
-        </action>
+            <action
+                    id="SortLinesDefaultAction"
+                    class="com.github.antonerofeev.linesorterintellijplugin.actions.SortLinesDefaultAction"
+                    text="Sort Lines (Default)"
+                    description="Sort lines alphabetically in the file">
+            </action>
+            <action
+                    id="SortLinesAlphabeticallyAscendingAction"
+                    class="com.github.antonerofeev.linesorterintellijplugin.actions.SortLinesAlphabeticallyAscendingAction"
+                    text="Sort Lines Alphabetically Ascending"
+                    description="Sort lines in a file alphabetically in ascending order">
+            </action>
+            <action
+                    id="SortLinesAlphabeticallyDescendingAction"
+                    class="com.github.antonerofeev.linesorterintellijplugin.actions.SortLinesAlphabeticallyDescendingAction"
+                    text="Sort Lines Alphabetically Descending"
+                    description="Sort lines in a file alphabetically in descending order">
+            </action>
+            <action
+                    id="SortLinesByLengthAscendingAction"
+                    class="com.github.antonerofeev.linesorterintellijplugin.actions.SortLinesByLengthAscendingAction"
+                    text="Sort Lines By Length Ascending"
+                    description="Sort lines in a file by length in ascending order">
+            </action>
+            <action
+                    id="SortLinesByLengthDescendingAction"
+                    class="com.github.antonerofeev.linesorterintellijplugin.actions.SortLinesByLengthDescendingAction"
+                    text="Sort Lines By Length Descending"
+                    description="Sort lines in a file by length in descending order">
+            </action>
+        </group>
+
     </actions>
 
 </idea-plugin>
