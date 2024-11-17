@@ -8,8 +8,8 @@
 
     <resource-bundle>messages.MyBundle</resource-bundle>
     <description><![CDATA[
-        Lines Sorter Pro is a handy tool for developers that lets you quickly sort lines within a file or just within a selected area.
-        This plugin adds a "Sort Lines" option to the editor's right-click Refactor menu, making line sorting easy and intuitive.
+        Lines Sorter Pro is a handy tool for developers that lets you quickly sort or shuffle lines within a file or just within a selected area.
+        The plugin adds multiple string sorting options, including alphabetical, by line length, and shuffle, to the editor's right-click Refactor menu, making it easy and intuitive to organize or mix up your content.
     ]]></description>
 
     <actions>
@@ -44,6 +44,12 @@
                     class="com.github.antonerofeev.linesorterintellijplugin.actions.SortLinesByLengthDescendingAction"
                     text="Sort Lines By Length Descending"
                     description="Sort lines in a file by length in descending order">
+            </action>
+            <action
+                    id="ShuffleLines"
+                    class="com.github.antonerofeev.linesorterintellijplugin.actions.ShuffleLinesAction"
+                    text="Shuffle Lines Randomly"
+                    description="Shuffles lines randomly">
             </action>
         </group>
 

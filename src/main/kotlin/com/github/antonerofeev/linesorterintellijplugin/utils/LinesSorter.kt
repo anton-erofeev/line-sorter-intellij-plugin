@@ -38,6 +38,7 @@ object LinesSorter {
             val sortedText = when (sortType) {
                 SortType.ALPHABETICAL -> sortAlphabetically(textToSort, sortOrder)
                 SortType.BY_LENGTH -> sortByLength(textToSort, sortOrder)
+                SortType.SHUFFLE -> shuffle(textToSort)
             }
 
             WriteCommandAction.runWriteCommandAction(project) {
@@ -83,5 +84,17 @@ object LinesSorter {
                 }
             }
             .collect(Collectors.joining("\n"))
+    }
+
+    /**
+     * Shuffles lines randomly.
+     *
+     * @param text The text to shuffle.
+     * @return The shuffled text.
+     */
+    private fun shuffle(text: String): String {
+        val lines = text.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toMutableList()
+        lines.shuffle()
+        return lines.joinToString("\n")
     }
 }
