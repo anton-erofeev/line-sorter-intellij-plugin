@@ -6,14 +6,15 @@
 
 ## Description
 <!-- Plugin description -->
-Lines Sorter Pro is a handy tool for developers that lets you quickly sort lines within a file or just within a selected area.
-This plugin adds a "Sort Lines" option to the editor's right-click Refactor menu, making line sorting easy and intuitive.
+Lines Sorter Pro is a handy tool for developers that lets you quickly sort or shuffle lines within a file or just within a selected area.
+The plugin adds multiple string sorting options, including alphabetical, by line length, and shuffle, to the editor's right-click Refactor menu, making it easy and intuitive to organize or mix up your content.
 
 ### **Key Features:**
 - **Alphabetical Sorting:** Sort lines alphabetically. Supports both ascending (A-Z) and descending (Z-A) order.
 - **Sorting by Line Length:** Sort lines based on their length. Supports both ascending (shortest to longest) and descending (longest to shortest) order.
 - **Selected Lines Sorting:** If text is highlighted, the plugin sorts only the selected lines, leaving the rest of the file unchanged.
 - **Full-File Sorting:** If no text is selected, all lines in the file are sorted alphabetically.
+- **Shuffle Lines:** Randomly shuffle the lines in the selection or the entire file, providing a quick way to mix up content without sorting.
 
 **Ideal for:**
 Developers working with configuration files, property lists, text data, or any files where organized, readable line order improves workflow and readability.
