@@ -6,6 +6,9 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import java.util.*
 import java.util.stream.Collectors
 
@@ -22,6 +25,7 @@ object LinesSorter {
     fun sort(project: Project?, editor: Editor?, sortType: SortType, sortOrder: SortOrder) {
         if (editor != null) {
             val document = editor.document
+            val fileExtension = editor.virtualFile.extension
             var start = editor.selectionModel.selectionStart
             var end = editor.selectionModel.selectionEnd
 
@@ -35,12 +39,11 @@ object LinesSorter {
                 end = document.textLength
             }
 
-            val sortedText = when (sortType) {
-                SortType.ALPHABETICAL -> sortAlphabetically(textToSort, sortOrder)
-                SortType.BY_LENGTH -> sortByLength(textToSort, sortOrder)
-                SortType.SHUFFLE -> shuffle(textToSort)
+            val sortedText = if (fileExtension == "json") {
+                sortJson(textToSort, sortType, sortOrder)
+            } else {
+                sortText(textToSort, sortType, sortOrder)
             }
-
             WriteCommandAction.runWriteCommandAction(project) {
                 document.replaceString(start, end, sortedText)
             }
@@ -48,6 +51,15 @@ object LinesSorter {
         } else {
             Messages.showMessageDialog(project, "Editor not found", "Error", Messages.getErrorIcon())
         }
+    }
+
+    private fun sortText(textToSort: String, sortType: SortType, sortOrder: SortOrder): String {
+        val sortedText = when (sortType) {
+            SortType.ALPHABETICAL -> sortAlphabetically(textToSort, sortOrder)
+            SortType.BY_LENGTH -> sortByLength(textToSort, sortOrder)
+            SortType.SHUFFLE -> shuffle(textToSort)
+        }
+        return sortedText
     }
 
     /**
@@ -96,5 +108,41 @@ object LinesSorter {
         val lines = text.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toMutableList()
         lines.shuffle()
         return lines.joinToString("\n")
+    }
+
+    private fun sortJson(text: String, sortType: SortType, sortOrder: SortOrder): String {
+        return try {
+            val json = Json { prettyPrint = true }
+            val jsonObject = json.parseToJsonElement(text) as JsonObject
+
+            val sortedJsonObject = when (sortType) {
+                SortType.ALPHABETICAL -> {
+                    JsonObject(
+                        jsonObject.entries.sortedBy { it.key }.let {
+                            if (sortOrder == SortOrder.DESCENDING) it.reversed() else it
+                        }.associate { it.key to it.value }
+                    )
+                }
+                SortType.BY_LENGTH -> {
+                    JsonObject(
+                        jsonObject.entries.sortedBy { (_, value) ->
+                            (value as? JsonPrimitive)?.content?.length ?: 0
+                        }.let {
+                            if (sortOrder == SortOrder.DESCENDING) it.reversed() else it
+                        }.associate { it.key to it.value }
+                    )
+                }
+                SortType.SHUFFLE -> {
+                    JsonObject(
+                        jsonObject.entries.shuffled().associate { it.key to it.value }
+                    )
+                }
+            }
+
+            json.encodeToString(JsonObject.serializer(), sortedJsonObject)
+        } catch (e: Exception) {
+            Messages.showMessageDialog(null, "Invalid JSON format", "Error", Messages.getErrorIcon())
+            text
+        }
     }
 }
