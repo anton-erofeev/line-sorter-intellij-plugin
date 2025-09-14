@@ -9,8 +9,6 @@ import com.intellij.openapi.ui.Messages
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import java.util.*
-import java.util.stream.Collectors
 
 object LinesSorter {
 
@@ -53,7 +51,7 @@ object LinesSorter {
         }
     }
 
-    private fun sortText(textToSort: String, sortType: SortType, sortOrder: SortOrder): String {
+    internal fun sortText(textToSort: String, sortType: SortType, sortOrder: SortOrder): String {
         val sortedText = when (sortType) {
             SortType.ALPHABETICAL -> sortAlphabetically(textToSort, sortOrder)
             SortType.BY_LENGTH -> sortByLength(textToSort, sortOrder)
@@ -70,14 +68,12 @@ object LinesSorter {
      * @return The sorted text.
      */
     private fun sortAlphabetically(text: String, sortOrder: SortOrder): String {
-        return Arrays.stream(text.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
-            .sorted { str1, str2 ->
-                when (sortOrder) {
-                    SortOrder.ASCENDING -> str1.compareTo(str2, ignoreCase = true)
-                    SortOrder.DESCENDING -> str2.compareTo(str1, ignoreCase = true)
-                }
-            }
-            .collect(Collectors.joining("\n"))
+        val lines = text.lines().filter { it.isNotEmpty() }
+        val sorted = when (sortOrder) {
+            SortOrder.ASCENDING -> lines.sortedWith(String.CASE_INSENSITIVE_ORDER)
+            SortOrder.DESCENDING -> lines.sortedWith(String.CASE_INSENSITIVE_ORDER.reversed())
+        }
+        return sorted.joinToString("\n")
     }
 
     /**
@@ -88,14 +84,12 @@ object LinesSorter {
      * @return The sorted text.
      */
     private fun sortByLength(text: String, sortOrder: SortOrder): String {
-        return Arrays.stream(text.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
-            .sorted { str1, str2 ->
-                when (sortOrder) {
-                    SortOrder.ASCENDING -> str1.length.compareTo(str2.length)
-                    SortOrder.DESCENDING -> str2.length.compareTo(str1.length)
-                }
-            }
-            .collect(Collectors.joining("\n"))
+        val lines = text.lines().filter { it.isNotEmpty() }
+        val sorted = when (sortOrder) {
+            SortOrder.ASCENDING -> lines.sortedBy { it.length }
+            SortOrder.DESCENDING -> lines.sortedByDescending { it.length }
+        }
+        return sorted.joinToString("\n")
     }
 
     /**
@@ -104,41 +98,56 @@ object LinesSorter {
      * @param text The text to shuffle.
      * @return The shuffled text.
      */
-    private fun shuffle(text: String): String {
-        val lines = text.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toMutableList()
-        lines.shuffle()
-        return lines.joinToString("\n")
-    }
+    private fun shuffle(text: String): String =
+        text.lineSequence()
+            .filter { it.isNotEmpty() }
+            .shuffled()
+            .joinToString("\n")
 
+
+    
+    /**
+     * Sorts a JSON string according to the specified type and order. Supports recursive sorting of nested JSON objects.
+     *
+     * @param text The JSON string to sort.
+     * @param sortType The type of sorting.
+     * @param sortOrder The sorting order.
+     * @return The sorted JSON string, or the original text if parsing fails.
+     */
     private fun sortJson(text: String, sortType: SortType, sortOrder: SortOrder): String {
         return try {
             val json = Json { prettyPrint = true }
             val jsonObject = json.parseToJsonElement(text) as JsonObject
 
-            val sortedJsonObject = when (sortType) {
-                SortType.ALPHABETICAL -> {
-                    JsonObject(
-                        jsonObject.entries.sortedBy { it.key }.let {
-                            if (sortOrder == SortOrder.DESCENDING) it.reversed() else it
-                        }.associate { it.key to it.value }
-                    )
+            /**
+             * Recursively sorts a JsonObject according to the specified type and order.
+             *
+             * - For [SortType.ALPHABETICAL]: sorts keys alphabetically.
+             * - For [SortType.BY_LENGTH]: sorts by the length of primitive values (non-primitives treated as length 0).
+             * - For [SortType.SHUFFLE]: shuffles key-value pairs randomly.
+             *
+             * All nested JsonObjects are sorted recursively.
+             *
+             * @param obj The JsonObject to sort.
+             * @return A new, sorted JsonObject.
+             */
+            fun sortJsonObject(obj: JsonObject): JsonObject {
+                val sortedEntries = when (sortType) {
+                    SortType.ALPHABETICAL -> obj.entries.sortedBy { it.key }
+                        .let { if (sortOrder == SortOrder.DESCENDING) it.reversed() else it }
+                    SortType.BY_LENGTH -> obj.entries.sortedBy { (_, value) ->
+                        (value as? JsonPrimitive)?.content?.length ?: 0
+                    }.let { if (sortOrder == SortOrder.DESCENDING) it.reversed() else it }
+                    SortType.SHUFFLE -> obj.entries.shuffled()
                 }
-                SortType.BY_LENGTH -> {
-                    JsonObject(
-                        jsonObject.entries.sortedBy { (_, value) ->
-                            (value as? JsonPrimitive)?.content?.length ?: 0
-                        }.let {
-                            if (sortOrder == SortOrder.DESCENDING) it.reversed() else it
-                        }.associate { it.key to it.value }
-                    )
-                }
-                SortType.SHUFFLE -> {
-                    JsonObject(
-                        jsonObject.entries.shuffled().associate { it.key to it.value }
-                    )
-                }
+                return JsonObject(
+                    sortedEntries.associate { (k, v) ->
+                        k to if (v is JsonObject) sortJsonObject(v) else v
+                    }
+                )
             }
 
+            val sortedJsonObject = sortJsonObject(jsonObject)
             json.encodeToString(JsonObject.serializer(), sortedJsonObject)
         } catch (e: Exception) {
             Messages.showMessageDialog(null, "Invalid JSON format", "Error", Messages.getErrorIcon())

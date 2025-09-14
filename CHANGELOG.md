@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-09-14
+### Added
+- Added recursive sorting for nested JSON objects
+
 ## [1.0.0] - 2024-12-11
 ### Added
 - Added JSON file Sorting feature
@@ -31,3 +35,4 @@
 [0.1.0]: https://github.com/anton-erofeev/line-sorter-intellij-plugin/commits/v0.1.0
 [0.1.1]: https://github.com/anton-erofeev/line-sorter-intellij-plugin/commits/v0.1.1
 [1.0.0]: https://github.com/anton-erofeev/line-sorter-intellij-plugin/commits/v1.0.0
+[1.1.0]: https://github.com/anton-erofeev/line-sorter-intellij-plugin/releases/tag/v1.1.0
