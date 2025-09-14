@@ -6,22 +6,106 @@
 
 ## Description
 <!-- Plugin description -->
-Lines Sorter Pro is a handy tool for developers that lets you quickly sort or shuffle lines within a file or just within a selected area.
-The plugin adds multiple string sorting options, including alphabetical, by line length, shuffle and JSON sorting to the editor's right-click Refactor menu, making it easy and intuitive to organize or mix up your content.
+Lines Sorter Pro is a powerful and easy-to-use plugin for IntelliJ IDEA that helps you instantly organize your text, code, or configuration files. Whether you need to sort lines alphabetically, by length, shuffle them, or even recursively sort keys in complex JSON files — this tool does it in just a couple of clicks.
 
-### **Key Features:**
-- **Alphabetical Sorting:** Sort lines alphabetically. Supports both ascending (A-Z) and descending (Z-A) order.
-- **Sorting by Line Length:** Sort lines based on their length. Supports both ascending (shortest to longest) and descending (longest to shortest) order.
-- **Selected Lines Sorting:** If text is highlighted, the plugin sorts only the selected lines, leaving the rest of the file unchanged.
-- **Full-File Sorting:** If no text is selected, all lines in the file are sorted alphabetically.
-- **Shuffle Lines:** Randomly shuffle the lines in the selection or the entire file, providing a quick way to mix up content without sorting.
-- **JSON File Sorting:** Allows sorting of JSON files, with options for alphabetical, value length, or shuffled order.
+- Supports plain text, code, and JSON files
+- Works with selected lines or the entire file
+- Recursively sorts nested JSON objects
+- Integrates seamlessly into the editor’s right-click <kbd>Refactor</kbd> menu
+
+
+### 🚀 Key Features
+
+- 🅰️ **Alphabetical Sorting**  
+  Sort lines alphabetically (A-Z or Z-A).
+
+- 🔢 **Sorting by Line Length**  
+  Sort lines by their length (shortest to longest or vice versa).
+
+- 🔀 **Shuffle Lines**  
+  Randomly shuffle selected lines or the entire file.
+
+- 📄 **Flexible Scope**  
+  Works with selected text or the whole file if nothing is selected.
+
+- 🗂️ **JSON File Sorting**  
+  - Sort JSON object keys alphabetically, by value length, or shuffle.
+  - Supports recursive sorting for nested JSON objects.
+
+- ⚡ **Easy Access**  
+  All features are available via the right-click <kbd>Refactor</kbd> menu in the editor.
+
 **Ideal for:**
 Developers working with configuration files, property lists, text data, or any files where organized, readable line order improves workflow and readability.
 
-**How to Use:**
-Install the plugin and restart IntelliJ IDEA.
-Right-click in the editor and select "Sort Lines" in the Refactor menu.
+## How to Use
+
+1. **Install the plugin** and restart IntelliJ IDEA.
+2. **Open any text or JSON file** in the editor.
+3. **Select the lines** you want to sort (or leave nothing selected to sort the whole file).
+4. **Right-click** in the editor and choose <kbd>Refactor</kbd> → <kbd>Sort Lines...</kbd>.
+5. **Pick the desired sorting option** from the menu:
+   - Sort Alphabetically (A-Z or Z-A)
+   - Sort by Line Length (ascending/descending)
+   - Shuffle Lines
+   - Sort JSON keys (alphabetically, by value length, or shuffle)
+
+<details>
+<summary>Example: Sorting JSON</summary>
+
+
+**Before:**
+```json
+{
+  "z": 1,
+  "a": {
+    "d": 4,
+    "b": 2,
+    "c": {
+      "y": 25,
+      "x": 24
+    }
+  },
+  "b": 3
+}
+```
+
+**After (alphabetical):**
+```json
+{
+  "a": {
+    "b": 2,
+    "c": {
+      "x": 24,
+      "y": 25
+    },
+    "d": 4
+  },
+  "b": 3,
+  "z": 1
+}
+```
+</details>
+
+
+<details>
+<summary>Example: Sorting plain text lines</summary>
+
+**Before:**
+```text
+banana
+apple
+carrot
+```
+
+**After (alphabetical):**
+```text
+apple
+banana
+carrot
+```
+</details>
+
 <!-- Plugin description end -->
 
 ## Installation
@@ -45,7 +129,6 @@ Right-click in the editor and select "Sort Lines" in the Refactor menu.
 
 
 ---
-Plugin based on the [IntelliJ Platform Plugin Template][template].
+Author: [anton-erofeev](https://github.com/antonerofeev)
 
-[template]: https://github.com/JetBrains/intellij-platform-plugin-template
 [docs:plugin-description]: https://plugins.jetbrains.com/docs/intellij/plugin-user-experience.html#plugin-description-and-presentation
