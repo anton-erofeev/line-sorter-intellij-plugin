@@ -114,19 +114,13 @@ object LinesSorter {
      * @param sortOrder The sorting order.
      * @return The sorted JSON string, or the original text if parsing fails.
      */
-    private fun sortJson(text: String, sortType: SortType, sortOrder: SortOrder): String {
+    internal fun sortJson(text: String, sortType: SortType, sortOrder: SortOrder): String {
         return try {
             val json = Json { prettyPrint = true }
             val jsonObject = json.parseToJsonElement(text) as JsonObject
 
             /**
              * Recursively sorts a JsonObject according to the specified type and order.
-             *
-             * - For [SortType.ALPHABETICAL]: sorts keys alphabetically.
-             * - For [SortType.BY_LENGTH]: sorts by the length of primitive values (non-primitives treated as length 0).
-             * - For [SortType.SHUFFLE]: shuffles key-value pairs randomly.
-             *
-             * All nested JsonObjects are sorted recursively.
              *
              * @param obj The JsonObject to sort.
              * @return A new, sorted JsonObject.

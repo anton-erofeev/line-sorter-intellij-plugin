@@ -78,10 +78,10 @@ class LinesSorterTest {
                         "z": 1
                     }
             """.trimIndent()
-        val result = LinesSorter.sortText(input, SortType.ALPHABETICAL, SortOrder.ASCENDING)
+        val result = LinesSorter.sortJson(input, SortType.ALPHABETICAL, SortOrder.ASCENDING)
         assertEquals(
-            expected.replace("\s".toRegex(), ""),
-            result.replace("\s".toRegex(), "")
+            expected.replace("\\s".toRegex(), ""),
+            result.replace("\\s".toRegex(), "")
         )
     }
 }
